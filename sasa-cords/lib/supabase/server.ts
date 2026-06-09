@@ -2,7 +2,6 @@ import { createServerClient as _createServerClient } from '@supabase/ssr'
 import { createClient as _createAdminClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 
-// ── Server Component client (respects RLS, user session) ──────────────────
 export async function createServerClient() {
   const cookieStore = await cookies()
 
@@ -14,14 +13,13 @@ export async function createServerClient() {
         getAll() {
           return cookieStore.getAll()
         },
-        setAll(cookiesToSet) {
+        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
+              cookieStore.set(name, value, options as any)
             )
           } catch {
             // Called from a Server Component — cookies can't be set here.
-            // Middleware handles cookie refresh.
           }
         },
       },
@@ -29,8 +27,6 @@ export async function createServerClient() {
   )
 }
 
-// ── Admin client (bypasses RLS — use ONLY in server-side API routes) ──────
-// Never expose the service role key to the browser.
 export function createAdminClient() {
   return _createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
