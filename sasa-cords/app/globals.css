@@ -6,41 +6,36 @@
 
 @layer base {
   :root {
-    /* SASA Dark Theme (default) */
-    --background: 229 84% 5%;
-    --foreground: 214 32% 91%;
+    --background: 40 30% 97%;
+    --foreground: 224 30% 15%;
 
-    --card: 228 47% 8%;
-    --card-foreground: 214 32% 91%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 30% 15%;
 
-    --popover: 228 47% 8%;
-    --popover-foreground: 214 32% 91%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 30% 15%;
 
-    /* Saffron gold as primary */
-    --primary: 43 96% 56%;
-    --primary-foreground: 229 84% 5%;
+    --primary: 38 92% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 228 40% 14%;
-    --secondary-foreground: 214 32% 91%;
+    --secondary: 40 20% 93%;
+    --secondary-foreground: 224 30% 15%;
 
-    --muted: 228 40% 12%;
-    --muted-foreground: 215 20% 55%;
+    --muted: 40 20% 93%;
+    --muted-foreground: 220 15% 45%;
 
-    --accent: 43 96% 56%;
-    --accent-foreground: 229 84% 5%;
+    --accent: 38 92% 50%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62% 61%;
-    --destructive-foreground: 214 32% 91%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 228 30% 15%;
-    --input: 228 30% 15%;
-    --ring: 43 96% 56%;
+    --border: 40 15% 88%;
+    --input: 40 15% 88%;
+    --ring: 38 92% 50%;
 
     --radius: 0.75rem;
   }
-
-  /* Light mode override — uncomment if you want light mode support */
-  /* .light { ... } */
 
   * {
     @apply border-border;
@@ -48,10 +43,10 @@
 
   body {
     @apply bg-background text-foreground font-sans antialiased;
-    background-color: hsl(229, 84%, 5%);
+    background-color: hsl(40, 30%, 97%);
     background-image:
-      linear-gradient(rgba(251, 191, 36, 0.025) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(251, 191, 36, 0.025) 1px, transparent 1px);
+      linear-gradient(rgba(180, 140, 40, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(180, 140, 40, 0.04) 1px, transparent 1px);
     background-size: 40px 40px;
   }
 
@@ -59,30 +54,25 @@
     @apply font-serif;
   }
 
-  /* Custom scrollbar */
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: hsl(228, 47%, 8%); }
-  ::-webkit-scrollbar-thumb { background: hsl(228, 30%, 22%); border-radius: 3px; }
-  ::-webkit-scrollbar-thumb:hover { background: hsl(43, 96%, 56%, 0.4); }
+  ::-webkit-scrollbar-track { background: hsl(40, 20%, 93%); }
+  ::-webkit-scrollbar-thumb { background: hsl(40, 15%, 78%); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(38, 92%, 50%, 0.5); }
 }
 
 @layer components {
-  /* ── Glass card ────────────────────────────────────────────── */
   .glass-card {
-    @apply bg-card/80 backdrop-blur-sm border border-border rounded-xl;
+    @apply bg-card border border-border rounded-xl shadow-sm;
   }
 
-  /* ── Saffron glow ──────────────────────────────────────────── */
   .glow-saffron {
-    box-shadow: 0 0 30px rgba(251, 191, 36, 0.12);
+    box-shadow: 0 0 24px rgba(217, 119, 6, 0.08);
   }
 
-  /* ── Status badge base ─────────────────────────────────────── */
   .status-badge {
     @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border;
   }
 
-  /* ── Sidebar item ──────────────────────────────────────────── */
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
            text-muted-foreground transition-all duration-200
@@ -90,24 +80,21 @@
   }
 
   .sidebar-item.active {
-    @apply text-amber-400 bg-amber-400/10 border border-amber-400/20;
+    @apply text-amber-700 bg-amber-50 border border-amber-200;
   }
 
-  /* ── Shimmer loading skeleton ──────────────────────────────── */
   .skeleton {
-    @apply animate-pulse rounded-lg bg-secondary/60;
+    @apply animate-pulse rounded-lg bg-secondary;
   }
 
-  /* ── Table row hover ───────────────────────────────────────── */
   .table-row-hover {
-    @apply transition-colors hover:bg-secondary/40 cursor-pointer;
+    @apply transition-colors hover:bg-secondary/60 cursor-pointer;
   }
 
-  /* ── Form input field ──────────────────────────────────────── */
   .input-field {
-    @apply w-full px-3 py-2 text-sm rounded-lg bg-secondary border border-border
-           text-foreground placeholder:text-muted-foreground/50
-           focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400/30
+    @apply w-full px-3 py-2 text-sm rounded-lg bg-white border border-border
+           text-foreground placeholder:text-muted-foreground/60
+           focus:outline-none focus:ring-2 focus:ring-amber-400/40 focus:border-amber-400/60
            transition-all;
   }
 }
@@ -115,16 +102,5 @@
 @layer utilities {
   .text-balance {
     text-wrap: balance;
-  }
-
-  /* Grain overlay — gives premium feel */
-  .grain::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-    opacity: 0.025;
-    pointer-events: none;
-    z-index: 9999;
   }
 }
