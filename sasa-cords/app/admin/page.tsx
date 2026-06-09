@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { Users, FileCheck, CheckCircle2, Clock, TrendingUp, ArrowRight } from 'lucide-react'
 import { EligibilityBadge, SubmissionBadge } from '@/components/shared/EligibilityBadge'
 import { formatDateTime } from '@/lib/utils'
-import AdminOverviewClient from '@/components/admin/AdminOverviewClient'
 
 export default async function AdminPage() {
   const supabase = await createServerClient()
