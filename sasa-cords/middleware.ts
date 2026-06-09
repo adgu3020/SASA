@@ -13,89 +13,39 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          )
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({ request })
           cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
+            supabaseResponse.cookies.set(name, value, options as any)
           )
         },
       },
     }
   )
 
-  // IMPORTANT: Do not write any logic between createServerClient and
-  // supabase.auth.getUser() — it will break session management.
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-
+  const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  // ── Public routes (no auth required) ─────────────────────────────────
-  const publicPaths = ['/login', '/auth/callback']
-  if (publicPaths.some(p => pathname.startsWith(p))) {
-    // If already logged in, redirect to appropriate dashboard
-    if (user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', user.id)
-        .single()
-
-      const dest = profile?.role === 'admin' ? '/admin' : '/student'
-      return NextResponse.redirect(new URL(dest, request.url))
-    }
-    return supabaseResponse
-  }
-
-  // ── Root redirect ─────────────────────────────────────────────────────
+  // Redirect root to login
   if (pathname === '/') {
-    if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
-
-    const dest = profile?.role === 'admin' ? '/admin' : '/student'
-    return NextResponse.redirect(new URL(dest, request.url))
-  }
-
-  // ── All other routes require authentication ───────────────────────────
-  if (!user) {
+    if (user) return NextResponse.redirect(new URL('/admin', request.url))
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // ── Admin routes require admin role ───────────────────────────────────
-  if (pathname.startsWith('/admin')) {
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single()
+  // Allow login page
+  if (pathname.startsWith('/login') || pathname.startsWith('/auth')) {
+    if (user) return NextResponse.redirect(new URL('/admin', request.url))
+    return supabaseResponse
+  }
 
-    if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/student', request.url))
-    }
+  // All other routes require auth
+  if (!user) {
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
   return supabaseResponse
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths EXCEPT:
-     * - _next/static (static files)
-     * - _next/image (image optimization)
-     * - favicon.ico
-     * - /images/* (public images including logo)
-     * - /api/* (API routes handle their own auth)
-     */
-    '/((?!_next/static|_next/image|favicon.ico|images|api).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|images|api).*)'],
 }
