@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* SASA Dark Theme (default) */
+    --background: 229 84% 5%;
+    --foreground: 214 32% 91%;
+
+    --card: 228 47% 8%;
+    --card-foreground: 214 32% 91%;
+
+    --popover: 228 47% 8%;
+    --popover-foreground: 214 32% 91%;
+
+    /* Saffron gold as primary */
+    --primary: 43 96% 56%;
+    --primary-foreground: 229 84% 5%;
+
+    --secondary: 228 40% 14%;
+    --secondary-foreground: 214 32% 91%;
+
+    --muted: 228 40% 12%;
+    --muted-foreground: 215 20% 55%;
+
+    --accent: 43 96% 56%;
+    --accent-foreground: 229 84% 5%;
+
+    --destructive: 0 62% 61%;
+    --destructive-foreground: 214 32% 91%;
+
+    --border: 228 30% 15%;
+    --input: 228 30% 15%;
+    --ring: 43 96% 56%;
+
+    --radius: 0.75rem;
+  }
+
+  /* Light mode override — uncomment if you want light mode support */
+  /* .light { ... } */
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    background-color: hsl(229, 84%, 5%);
+    background-image:
+      linear-gradient(rgba(251, 191, 36, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(251, 191, 36, 0.025) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  h1, h2, h3 {
+    @apply font-serif;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: hsl(228, 47%, 8%); }
+  ::-webkit-scrollbar-thumb { background: hsl(228, 30%, 22%); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: hsl(43, 96%, 56%, 0.4); }
+}
+
+@layer components {
+  /* ── Glass card ────────────────────────────────────────────── */
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border border-border rounded-xl;
+  }
+
+  /* ── Saffron glow ──────────────────────────────────────────── */
+  .glow-saffron {
+    box-shadow: 0 0 30px rgba(251, 191, 36, 0.12);
+  }
+
+  /* ── Status badge base ─────────────────────────────────────── */
+  .status-badge {
+    @apply inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border;
+  }
+
+  /* ── Sidebar item ──────────────────────────────────────────── */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+           text-muted-foreground transition-all duration-200
+           hover:text-foreground hover:bg-secondary;
+  }
+
+  .sidebar-item.active {
+    @apply text-amber-400 bg-amber-400/10 border border-amber-400/20;
+  }
+
+  /* ── Shimmer loading skeleton ──────────────────────────────── */
+  .skeleton {
+    @apply animate-pulse rounded-lg bg-secondary/60;
+  }
+
+  /* ── Table row hover ───────────────────────────────────────── */
+  .table-row-hover {
+    @apply transition-colors hover:bg-secondary/40 cursor-pointer;
+  }
+
+  /* ── Form input field ──────────────────────────────────────── */
+  .input-field {
+    @apply w-full px-3 py-2 text-sm rounded-lg bg-secondary border border-border
+           text-foreground placeholder:text-muted-foreground/50
+           focus:outline-none focus:ring-2 focus:ring-amber-400/30 focus:border-amber-400/30
+           transition-all;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Grain overlay — gives premium feel */
+  .grain::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 9999;
+  }
+}
