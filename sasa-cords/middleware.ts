@@ -1,49 +1,31 @@
-import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request })
-
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll()
-        },
-        setAll(cookiesToSet: { name: string; value: string; options?: Record<string, unknown> }[]) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          supabaseResponse = NextResponse.next({ request })
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options as any)
-          )
-        },
-      },
-    }
-  )
-
-  const { data: { user } } = await supabase.auth.getUser()
   const { pathname } = request.nextUrl
 
-  // Redirect root to login
+  // Check for Supabase auth session cookie
+  const hasSession = request.cookies.getAll().some(
+    c => c.name.startsWith('sb-') && c.name.endsWith('-auth-token')
+  )
+
+  // Root redirect
   if (pathname === '/') {
-    if (user) return NextResponse.redirect(new URL('/admin', request.url))
-    return NextResponse.redirect(new URL('/login', request.url))
+    return NextResponse.redirect(
+      new URL(hasSession ? '/admin' : '/login', request.url)
+    )
   }
 
-  // Allow login page
+  // Allow auth routes through
   if (pathname.startsWith('/login') || pathname.startsWith('/auth')) {
-    if (user) return NextResponse.redirect(new URL('/admin', request.url))
-    return supabaseResponse
+    return NextResponse.next()
   }
 
-  // All other routes require auth
-  if (!user) {
+  // Protected routes — redirect to login if no session
+  if (!hasSession) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  return supabaseResponse
+  return NextResponse.next()
 }
 
 export const config = {
