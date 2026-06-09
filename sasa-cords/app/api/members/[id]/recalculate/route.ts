@@ -3,7 +3,7 @@ import { createServerClient, createAdminClient } from '@/lib/supabase/server'
 import { checkEligibility } from '@/lib/eligibility'
 import { STUDENT_NOTIFICATIONS } from '@/lib/eligibility.config'
 
-export async function POST(request: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
   const admin    = createAdminClient()
 
@@ -13,7 +13,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
   const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single()
   if (profile?.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { id } = params
+  const { id } = await params
 
   const { data: member } = await admin
     .from('members')

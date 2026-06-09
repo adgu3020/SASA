@@ -3,7 +3,7 @@ import { createServerClient, createAdminClient } from '@/lib/supabase/server'
 import { STUDENT_NOTIFICATIONS } from '@/lib/eligibility.config'
 import { emailStudentMarkedEligible, emailSubmissionRejected } from '@/lib/email'
 
-export async function PATCH(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
   const admin    = createAdminClient()
 
@@ -17,7 +17,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
     .single()
   if (adminProfile?.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { id } = params
+  const { id } = await params
   const body   = await request.json()
   const { status, reviewer_notes } = body
 

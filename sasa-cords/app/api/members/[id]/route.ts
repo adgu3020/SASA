@@ -9,7 +9,7 @@ async function requireAdmin(supabase: any, user: any) {
 }
 
 // PUT /api/members/[id] — update member and semester records
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
   const admin    = createAdminClient()
   const { data: { user } } = await supabase.auth.getUser()
@@ -18,7 +18,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 
   const body = await request.json()
   const { semester_records = [], ...memberData } = body
-  const { id } = params
+  const { id } = await params
 
   // Update member core fields
   const { error: memberError } = await admin.from('members').update({
@@ -92,14 +92,14 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/members/[id]
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const supabase = await createServerClient()
   const admin    = createAdminClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   if (!await requireAdmin(supabase, user)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
-  const { id } = params
+  const { id } = await params
   const { error } = await admin.from('members').delete().eq('id', id)
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
 
