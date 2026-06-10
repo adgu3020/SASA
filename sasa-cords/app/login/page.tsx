@@ -64,15 +64,15 @@ export default function LoginPage() {
                 src="/images/SASALogo.svg"
                 alt="SASA Logo"
                 style={{
-                  width: '240px',
-                  height: '240px',
-                  marginTop: '-72px',
-                  marginLeft: '-72px',
+                  width: '185px',
+                  height: '185px',
+                  marginTop: '-36px',
+                  marginLeft: '-44.5px',
                   maxWidth: 'none',
                 }}
               />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">SASA Cords</h1>
+            <h1 className="font-serif text-3xl text-foreground">Check Cording Progress</h1>
             <p className="text-muted-foreground text-sm mt-1">
               South Asian Student Association
             </p>
@@ -136,10 +136,6 @@ export default function LoginPage() {
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
           </form>
-
-          <p className="text-center text-xs text-gray-400 mt-6">
-            Contact your SASA board if you need access.
-          </p>
         </div>
       </motion.div>
     </div>
