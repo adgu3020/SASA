@@ -64,7 +64,7 @@ export default function Sidebar({ profile }: { profile: Profile }) {
       )}>
         <div className="w-9 h-9 rounded-lg bg-amber-400/10 border border-amber-400/20 flex items-center justify-center shrink-0 overflow-hidden">
           <Image
-            src="/images/sasa-logo.png"
+            src="/images/SASALogo.svg"
             alt="SASA"
             width={28}
             height={28}
