@@ -59,13 +59,17 @@ export default function LoginPage() {
         <div className="bg-white rounded-2xl shadow-lg border border-amber-100 px-10 py-10">
           {/* Logo + Title */}
           <div className="flex flex-col items-center mb-8">
-            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-amber-200 mb-4 flex items-center justify-center bg-white">
-              <Image
+            <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-amber-200 mb-4">
+              <img
                 src="/images/SASALogo.svg"
                 alt="SASA Logo"
-                width={96}
-                height={96}
-                className="object-cover scale-[0.6]"
+                style={{
+                  width: '240px',
+                  height: '240px',
+                  marginTop: '-72px',
+                  marginLeft: '-72px',
+                  maxWidth: 'none',
+                }}
               />
             </div>
             <h1 className="font-serif text-3xl text-foreground">SASA Cords</h1>
