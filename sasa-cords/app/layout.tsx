@@ -5,7 +5,6 @@ import { Toaster } from '@/components/ui/toaster'
 export const metadata: Metadata = {
   title: 'SASA Cords — Eligibility Portal',
   description: 'South Asian Student Association Graduation Cord Eligibility Platform',
-  icons: { icon: '/favicon.ico' },
 }
 
 export default function RootLayout({

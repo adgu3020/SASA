@@ -37,7 +37,8 @@ export default function LoginPage() {
         .eq('id', data.user.id)
         .single()
 
-      router.push(profile?.role === 'admin' ? '/admin' : '/student')
+      const dest = profile?.role === 'admin' ? '/admin' : '/student'
+      window.location.href = dest
     }
   }
 
