@@ -62,15 +62,15 @@ export default function Sidebar({ profile }: { profile: Profile }) {
         'flex items-center gap-3 px-4 py-5 border-b border-border',
         collapsed && 'justify-center px-2'
       )}>
-        <div className="w-9 h-9 rounded-lg bg-amber-400/10 border border-amber-400/20 flex items-center justify-center shrink-0 overflow-hidden">
+        <div className="w-9 h-9 rounded-full border-2 border-amber-200 flex items-center justify-center shrink-0 overflow-hidden bg-white">
           <img
             src="/images/SASALogo.svg"
             alt="SASA"
             style={{
-              width: '90px',
-              height: '90px',
-              marginTop: '-27px',
-              marginLeft: '-27px',
+              width: '60px',
+              height: '60px',
+              marginTop: '7.4px',
+              marginLeft: '-0px',
               maxWidth: 'none',
             }}
           />
