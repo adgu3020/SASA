@@ -15,7 +15,7 @@ interface Meeting {
   description: string | null
   semester_id: string | null
   semester?: { name: string } | null
-  attendance?: { count: number }[]
+  attendance?: { member_id: string }[]  // ← changed from { count: number }[]
   created_at: string
 }
 
@@ -56,10 +56,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
   }, [meetings, search, semesterFilter])
 
   function getAttendanceCount(meeting: Meeting): number {
-    if (!meeting.attendance) return 0
-    const first = meeting.attendance[0] as any
-    if (typeof first === 'object' && 'count' in first) return Number(first.count)
-    return meeting.attendance.length
+    return (meeting.attendance ?? []).length
   }
 
   async function handleDelete(id: string) {
@@ -82,7 +79,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
   function onAttendanceSaved(meetingId: string, count: number) {
     setMeetings(prev => prev.map(m =>
       m.id === meetingId
-        ? { ...m, attendance: [{ count }] }
+        ? { ...m, attendance: Array(count).fill({ member_id: '' }) }
         : m
     ))
   }

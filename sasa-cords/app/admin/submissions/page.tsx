@@ -1,10 +1,12 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import SubmissionsClient from '@/components/admin/SubmissionsClient'
 
-export default async function AdminSubmissionsPage() {
-  const supabase = await createServerClient()
+export const dynamic = 'force-dynamic'
 
-  const { data: submissions } = await supabase
+export default async function AdminSubmissionsPage() {
+  const admin = createAdminClient()
+
+  const { data: submissions } = await admin
     .from('cord_submissions')
     .select(`
       *,

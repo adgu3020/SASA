@@ -1,18 +1,17 @@
-import { createServerClient } from '@/lib/supabase/server'
+import { createAdminClient } from '@/lib/supabase/server'
 import MembersClient from '@/components/admin/MembersClient'
 
-export default async function AdminMembersPage() {
-  const supabase = await createServerClient()
+export const dynamic = 'force-dynamic'
 
-  const [
-    { data: members },
-    { data: semesters },
-  ] = await Promise.all([
-    supabase
+export default async function AdminMembersPage() {
+  const admin = createAdminClient()
+
+  const [{ data: members }, { data: semesters }] = await Promise.all([
+    admin
       .from('members')
       .select('*, member_semesters(*, semester:semesters(*))')
       .order('full_name'),
-    supabase
+    admin
       .from('semesters')
       .select('*')
       .order('year', { ascending: false }),
