@@ -6,6 +6,7 @@ import { Plus, Search, Users, Calendar, CheckSquare, ChevronRight, Trash2, Loade
 import { formatDate, cn } from '@/lib/utils'
 import CreateMeetingDialog from './CreateMeetingDialog'
 import MeetingAttendanceSheet from './MeetingAttendanceSheet'
+import { apiFetch } from '@/lib/api-client'
 
 interface Meeting {
   id: string
@@ -64,8 +65,12 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
   async function handleDelete(id: string) {
     if (!confirm('Delete this meeting and all its attendance records?')) return
     setDeleting(id)
-    await fetch(`/api/meetings/${id}`, { method: 'DELETE' })
-    setMeetings(prev => prev.filter(m => m.id !== id))
+    const res = await apiFetch(`/api/meetings/${id}`, { method: 'DELETE' })
+    if (res.ok) {
+      setMeetings(prev => prev.filter(m => m.id !== id))
+    } else {
+      alert('Failed to delete meeting. Please try again.')
+    }
     setDeleting(null)
   }
 
