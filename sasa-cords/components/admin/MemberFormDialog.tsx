@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Plus, Loader2, Trash2 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { MemberWithSemesters, Semester, MemberSemester } from '@/types'
+import { apiFetch } from '@/lib/api-client'
 
 interface Props {
   open: boolean
@@ -119,11 +120,10 @@ export default function MemberFormDialog({ open, member, semesters, onClose, onS
       })),
     }
 
-    const res = await fetch(
+    const res = await apiFetch(
       isEdit ? `/api/members/${member!.id}` : '/api/members',
       {
         method: isEdit ? 'PUT' : 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       }
     )
