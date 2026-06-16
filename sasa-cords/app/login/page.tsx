@@ -5,7 +5,8 @@ import { motion } from 'framer-motion'
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
 import Image from 'next/image'
-import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { Eye, EyeOff, Loader2, ArrowLeft } from 'lucide-react'
+import Link from 'next/link'
 
 export default function LoginPage() {
   const router = useRouter()
@@ -49,6 +50,12 @@ export default function LoginPage() {
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-amber-400/10 blur-[120px]" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-orange-200/20 blur-[100px]" />
       </div>
+
+      {/* Back Button */}
+      <Link href="/" className="absolute top-6 left-6 flex items-center gap-1 text-gray-600 hover:text-gray-800 transition-colors group">
+        <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+        <span className="text-sm font-medium">Back</span>
+      </Link>
 
       <motion.div
         initial={{ opacity: 0, y: 24 }}
@@ -136,6 +143,15 @@ export default function LoginPage() {
               {loading && <Loader2 size={16} className="animate-spin" />}
               {loading ? 'Signing in…' : 'Sign in'}
             </button>
+
+            <div className="mt-6 text-center">
+              <p className="text-sm text-gray-600">
+                Don't have an account?{' '}
+                <Link href="/signup" className="text-amber-600 hover:text-amber-700 font-medium transition-colors">
+                  Sign up here
+                </Link>
+              </p>
+            </div>
           </form>
         </div>
       </motion.div>
