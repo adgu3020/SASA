@@ -13,30 +13,34 @@ export interface BoardMember {
 
 export const BOARD_MEMBERS: BoardMember[] = [
   {
-    name:  'Your Name',
+    name:  'Ria Kashikar',
     role:  'President',
     bio:   'Short bio here.',
     image: '/images/board/president.jpg',
   },
   {
-    name:  'Your Name',
-    role:  'Vice President',
-    bio:   'Short bio here.',
-  },
-  {
-    name:  'Your Name',
-    role:  'Events Chair',
-    bio:   'Short bio here.',
-  },
-  {
-    name:  'Your Name',
-    role:  'Secretary',
-    bio:   'Short bio here.',
-  },
-  {
-    name:  'Your Name',
+    name:  'Aditya Gupta',
     role:  'Treasurer',
     bio:   'Short bio here.',
+    image: '/images/board/treasurer.jpg'
+  },
+  {
+    name:  'Asmitha Muthukumar',
+    role:  'Marketing Chair',
+    bio:   'Short bio here.',
+    image: '/images/board/marketing.jpg'
+  },
+  {
+    name:  'Neil Sury',
+    role:  'Outreach Chair',
+    bio:   'Short bio here.',
+    image: '/images/board/outreach.jpg'
+  },
+  {
+    name:  'Aditi Patel',
+    role:  'Head of Events',
+    bio:   'Short bio here.',
+    image: '/images/board/events.jpg'
   },
 ]
 
