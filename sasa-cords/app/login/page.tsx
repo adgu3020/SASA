@@ -80,7 +80,7 @@ export default function LoginPage() {
                 }}
               />
             </div>
-            <h1 className="font-serif text-3xl text-foreground">Check Cording Progress</h1>
+            <h1 className="font-serif text-3xl text-foreground">Login</h1>
             <p className="text-muted-foreground text-sm mt-1">
               South Asian Student Association
             </p>
