@@ -16,6 +16,7 @@ import {
   ChevronLeft,
   ChevronRight,
   GraduationCap,
+  Home,
 } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import { cn, getInitials } from '@/lib/utils'
@@ -135,7 +136,25 @@ export default function Sidebar({ profile }: { profile: Profile }) {
       </nav>
 
       {/* Footer — User + Sign Out */}
+      {/* Footer — Back to Website + User + Sign Out */}
       <div className="border-t border-border p-2 space-y-1">
+        <Link
+          href="/"
+          className={cn(
+            'sidebar-item',
+            collapsed && 'justify-center px-2'
+          )}
+          title={collapsed ? 'Back to Website' : undefined}
+        >
+          <Home size={16} className="shrink-0" />
+          <AnimatePresence mode="wait">
+            {!collapsed && (
+              <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                Back to Website
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </Link>
         <div className={cn(
           'flex items-center gap-3 px-3 py-2 rounded-lg',
           collapsed && 'justify-center px-2'
