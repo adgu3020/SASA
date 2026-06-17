@@ -9,6 +9,7 @@ export interface BoardMember {
   email?: string
   bio?: string
   image?: string  // place images in public/images/board/
+  imagePosition?: string
 }
 
 export const BOARD_MEMBERS: BoardMember[] = [
@@ -17,30 +18,35 @@ export const BOARD_MEMBERS: BoardMember[] = [
     role:  'President',
     bio:   'Short bio here.',
     image: '/images/board/president.jpg',
+    imagePosition: 'center top',
   },
   {
     name:  'Aditya Gupta',
     role:  'Treasurer',
     bio:   'Short bio here.',
-    image: '/images/board/treasurer.jpg'
+    image: '/images/board/treasurer.jpg',
+    imagePosition: 'center top',
   },
   {
     name:  'Asmitha Muthukumar',
     role:  'Marketing Chair',
     bio:   'Short bio here.',
-    image: '/images/board/marketing.jpg'
+    image: '/images/board/marketing.jpg',
+    imagePosition: 'center top',
   },
   {
     name:  'Neil Sury',
     role:  'Outreach Chair',
     bio:   'Short bio here.',
-    image: '/images/board/outreach.jpg'
+    image: '/images/board/outreach.jpg',
+    imagePosition: 'center top',
   },
   {
     name:  'Aditi Patel',
     role:  'Head of Events',
     bio:   'Short bio here.',
-    image: '/images/board/events.jpg'
+    image: '/images/board/events.jpg',
+    imagePosition: 'center top',
   },
 ]
 

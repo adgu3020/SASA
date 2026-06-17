@@ -37,6 +37,7 @@ export default function BoardPage() {
                   width={80}
                   height={80}
                   className="object-cover w-full h-full"
+                  style={{ objectPosition: member.imagePosition || 'center' }}
                   onError={(e) => { e.currentTarget.style.display = 'none' }}
                 />
               ) : (
