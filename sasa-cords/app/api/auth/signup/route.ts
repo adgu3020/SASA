@@ -20,7 +20,7 @@ export async function POST(request: Request) {
       )
     }
 
-    // Create the auth user
+    // Create the auth user - profile is auto-created by trigger
     const supabase = await createServerClient()
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
@@ -45,23 +45,6 @@ export async function POST(request: Request) {
     }
 
     const admin = createAdminClient()
-
-    // Create profile record with role = 'student'
-    const { error: profileError } = await admin
-      .from('profiles')
-      .insert({
-        id: authData.user.id,
-        email: authData.user.email,
-        full_name: fullName,
-        role: 'student',
-      })
-
-    if (profileError) {
-      return NextResponse.json(
-        { error: 'Failed to create profile' },
-        { status: 400 }
-      )
-    }
 
     // Auto-link member record if email matches and not yet linked
     const { data: member } = await admin
