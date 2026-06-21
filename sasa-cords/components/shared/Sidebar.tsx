@@ -1,8 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -46,6 +45,12 @@ export default function Sidebar({ profile }: { profile: Profile }) {
   const supabase = createClient()
   const [collapsed, setCollapsed] = useState(false)
 
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      setCollapsed(true)
+    }
+  }, [])
+
   const isAdmin = profile.role === 'admin'
   const navItems = isAdmin ? ADMIN_NAV : STUDENT_NAV
 
@@ -58,11 +63,11 @@ export default function Sidebar({ profile }: { profile: Profile }) {
     <motion.aside
       animate={{ width: collapsed ? 72 : 240 }}
       transition={{ duration: 0.25, ease: 'easeInOut' }}
-      className="relative flex flex-col h-full border-r border-border bg-card/60 backdrop-blur-sm shrink-0 overflow-hidden"
+      className="relative flex flex-col h-full border-r border-border bg-card/60 backdrop-blur-sm shrink-0"
     >
       {/* Header — Logo */}
       <div className={cn(
-        'flex items-center gap-3 px-4 py-5 border-b border-border',
+        'flex items-center gap-3 px-4 py-5 border-b border-border overflow-hidden',
         collapsed && 'justify-center px-2'
       )}>
         <div className="w-9 h-9 rounded-full border-2 border-amber-200 flex items-center justify-center shrink-0 overflow-hidden bg-white">
@@ -98,7 +103,7 @@ export default function Sidebar({ profile }: { profile: Profile }) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto">
+      <nav className="flex-1 p-2 space-y-0.5 overflow-y-auto overflow-x-hidden">
         {navItems.map(item => {
           const Icon = item.icon
           const isActive = item.href === '/admin' || item.href === '/student'
@@ -135,15 +140,11 @@ export default function Sidebar({ profile }: { profile: Profile }) {
         })}
       </nav>
 
-      {/* Footer — User + Sign Out */}
       {/* Footer — Back to Website + User + Sign Out */}
-      <div className="border-t border-border p-2 space-y-1">
+      <div className="border-t border-border p-2 space-y-1 overflow-hidden">
         <Link
           href="/"
-          className={cn(
-            'sidebar-item',
-            collapsed && 'justify-center px-2'
-          )}
+          className={cn('sidebar-item', collapsed && 'justify-center px-2')}
           title={collapsed ? 'Back to Website' : undefined}
         >
           <Home size={16} className="shrink-0" />
@@ -155,13 +156,14 @@ export default function Sidebar({ profile }: { profile: Profile }) {
             )}
           </AnimatePresence>
         </Link>
+
         <div className={cn(
           'flex items-center gap-3 px-3 py-2 rounded-lg',
           collapsed && 'justify-center px-2'
         )}>
           <div className="w-7 h-7 rounded-full bg-amber-400/20 border border-amber-400/30 flex items-center justify-center shrink-0">
-            <span className="text-amber-400 text-xs font-semibold">
-              {getInitials(profile.full_name ?? profile.email)}
+            <span className="text-amber-600 text-xs font-semibold">
+              {getInitials(profile.full_name || profile.email || '?')}
             </span>
           </div>
           <AnimatePresence mode="wait">
@@ -173,7 +175,7 @@ export default function Sidebar({ profile }: { profile: Profile }) {
                 className="min-w-0"
               >
                 <p className="text-xs font-medium text-foreground truncate">
-                  {profile.full_name ?? profile.email}
+                  {profile.full_name || profile.email}
                 </p>
                 <p className="text-xs text-muted-foreground capitalize">
                   {profile.role}
@@ -186,7 +188,7 @@ export default function Sidebar({ profile }: { profile: Profile }) {
         <button
           onClick={handleSignOut}
           className={cn(
-            'sidebar-item w-full text-red-400/70 hover:text-red-400 hover:bg-red-400/10',
+            'sidebar-item w-full text-red-400/70 hover:text-red-500 hover:bg-red-50',
             collapsed && 'justify-center px-2'
           )}
           title={collapsed ? 'Sign out' : undefined}
@@ -205,7 +207,7 @@ export default function Sidebar({ profile }: { profile: Profile }) {
       {/* Collapse toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="absolute top-[72px] -right-3 w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-amber-400/40 transition-colors z-10 shadow-lg"
+        className="absolute top-[72px] -right-3 w-6 h-6 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-amber-400/40 transition-colors z-20 shadow-lg"
       >
         {collapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
       </button>

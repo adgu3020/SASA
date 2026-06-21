@@ -9,6 +9,7 @@ import MemberDetailSheet from './MemberDetailSheet'
 import { cn, formatDate } from '@/lib/utils'
 import type { Member, MemberWithSemesters, Semester } from '@/types'
 import type { EligibilityStatus } from '@/lib/eligibility.config'
+import { apiFetch } from '@/lib/api-client'
 
 interface MembersClientProps {
   initialMembers: MemberWithSemesters[]
@@ -56,18 +57,23 @@ export default function MembersClient({ initialMembers, semesters }: MembersClie
   async function handleDelete(id: string) {
     if (!confirm('Delete this member? This cannot be undone.')) return
     setDeleting(id)
-    const res = await fetch(`/api/members/${id}`, { method: 'DELETE' })
+    const res = await apiFetch(`/api/members/${id}`, { method: 'DELETE' })
     if (res.ok) {
       setMembers(prev => prev.filter(m => m.id !== id))
+    } else {
+      alert('Failed to delete member. Please try again.')
     }
     setDeleting(null)
   }
 
+
   async function handleRecalculate(member: MemberWithSemesters) {
-    const res = await fetch(`/api/members/${member.id}/recalculate`, { method: 'POST' })
+    const res = await apiFetch(`/api/members/${member.id}/recalculate`, { method: 'POST' })
     if (res.ok) {
       const { data } = await res.json()
-      setMembers(prev => prev.map(m => m.id === data.id ? { ...m, ...data } : m))
+      setMembers(prev => prev.map(m => m.id === member.id ? { ...m, ...data } : m))
+    } else {
+      alert('Failed to recalculate eligibility. Please try again.')
     }
   }
 

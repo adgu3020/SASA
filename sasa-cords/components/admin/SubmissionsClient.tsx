@@ -7,6 +7,7 @@ import { SubmissionBadge, EligibilityBadge } from '@/components/shared/Eligibili
 import { formatDateTime, cn } from '@/lib/utils'
 import type { CordSubmission } from '@/types'
 import type { SubmissionStatus } from '@/lib/eligibility.config'
+import { apiFetch } from '@/lib/api-client'
 
 interface Props {
   initialSubmissions: CordSubmission[]
@@ -33,9 +34,8 @@ export default function SubmissionsClient({ initialSubmissions }: Props) {
 
   async function updateStatus(id: string, status: SubmissionStatus, notes?: string) {
     setProcessing(id)
-    const res = await fetch(`/api/submissions/${id}`, {
+    const res = await apiFetch(`/api/submissions/${id}`, {
       method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status, reviewer_notes: notes }),
     })
 
@@ -43,6 +43,8 @@ export default function SubmissionsClient({ initialSubmissions }: Props) {
       const { data } = await res.json()
       setSubmissions(prev => prev.map(s => s.id === id ? { ...s, ...data } : s))
       if (selected?.id === id) setSelected(s => s ? { ...s, ...data } : null)
+    } else {
+      alert('Failed to update submission. Please try again.')
     }
     setProcessing(null)
   }
@@ -56,7 +58,7 @@ export default function SubmissionsClient({ initialSubmissions }: Props) {
   ]
 
   return (
-    <div className="flex gap-6 h-[calc(100vh-160px)]">
+    <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-160px)]">
       {/* Left: list */}
       <div className="flex flex-col gap-4 flex-1 min-w-0">
         {/* Toolbar */}

@@ -1,5 +1,5 @@
 export const ELIGIBILITY_REQUIREMENTS = {
-  minSemesters: 0,
+  minSemesters: 2,
   minAttendanceRate: 0.75,
   minTotalEvents: 2,
   minTotalTasks: 0,

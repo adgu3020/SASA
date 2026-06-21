@@ -142,7 +142,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.03 }}
-                className="flex items-center justify-between px-5 py-4 hover:bg-secondary/40 transition-colors group"
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 py-4 hover:bg-secondary/40 transition-colors group"
               >
                 <div
                   className="flex items-center gap-4 flex-1 min-w-0 cursor-pointer"
@@ -173,7 +173,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0">
+                <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap sm:shrink-0">
                   {/* Attendance count */}
                   <div
                     className="flex items-center gap-1.5 text-sm cursor-pointer"

@@ -1,23 +1,32 @@
 import Sidebar from '@/components/shared/Sidebar'
+import { createServerClient, createAdminClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 import type { Profile } from '@/types'
 
-const mockProfile: Profile = {
-  id: 'student',
-  email: 'student@sasa.com',
-  full_name: 'Student',
-  role: 'student',
-  created_at: '',
-  updated_at: '',
-}
+export const dynamic = 'force-dynamic'
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) redirect('/login')
+
+  const admin = createAdminClient()
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single()
+
+  if (!profile) redirect('/login')
+
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar profile={mockProfile} />
+      <Sidebar profile={profile as Profile} />
       <main className="flex-1 overflow-y-auto">
         <div className="min-h-full p-6 lg:p-8">
           {children}
