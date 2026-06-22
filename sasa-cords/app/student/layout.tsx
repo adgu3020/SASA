@@ -11,15 +11,15 @@ export default async function DashboardLayout({
   children: React.ReactNode
 }) {
   const supabase = await createServerClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { session } } = await supabase.auth.getSession()
 
-  if (!user) redirect('/login')
+  if (!session) redirect('/login')
 
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
     .select('*')
-    .eq('id', user.id)
+    .eq('id', session.user.id)
     .single()
 
   if (!profile) redirect('/login')

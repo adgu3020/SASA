@@ -23,17 +23,42 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   if (memberError) return NextResponse.json({ error: memberError.message }, { status: 500 })
 
-  await admin.from('member_semesters').delete().eq('member_id', id)
+  const deduped = Array.from(
+    new Map(semester_records.map((r: any) => [r.semester_id, r])).values()
+  )
+  const currentSemesterIds = deduped.map((r: any) => r.semester_id)
 
-  if (semester_records.length > 0) {
-    const records = semester_records.map((r: any) => ({
-      member_id: id, semester_id: r.semester_id,
-      meetings_attended: r.meetings_attended, meetings_total: r.meetings_total,
-      events_attended: r.events_attended, tasks_completed: r.tasks_completed,
-      volunteer_hours: r.volunteer_hours, held_leadership: r.held_leadership,
-      leadership_role: r.leadership_role || null,
+  // Remove any semester records the user took OUT of the form
+  let deleteQuery = admin.from('member_semesters').delete().eq('member_id', id)
+  if (currentSemesterIds.length > 0) {
+    deleteQuery = deleteQuery.not('semester_id', 'in', `(${currentSemesterIds.join(',')})`)
+  }
+  const { error: deleteError } = await deleteQuery
+  if (deleteError) {
+    return NextResponse.json({ error: `Failed to clear old semester data: ${deleteError.message}` }, { status: 500 })
+  }
+
+  // Upsert current records — updates existing rows instead of erroring on conflict
+  if (deduped.length > 0) {
+    const records = deduped.map((r: any) => ({
+      member_id:         id,
+      semester_id:       r.semester_id,
+      meetings_attended: r.meetings_attended,
+      meetings_total:    r.meetings_total,
+      events_attended:   r.events_attended,
+      tasks_completed:   r.tasks_completed,
+      volunteer_hours:   r.volunteer_hours,
+      held_leadership:   r.held_leadership,
+      leadership_role:   r.leadership_role || null,
     }))
-    await admin.from('member_semesters').insert(records)
+
+    const { error: semUpsertError } = await admin
+      .from('member_semesters')
+      .upsert(records, { onConflict: 'member_id,semester_id' })
+
+    if (semUpsertError) {
+      return NextResponse.json({ error: `Failed to save semester data: ${semUpsertError.message}` }, { status: 500 })
+    }
   }
 
   const { data: fullMember } = await admin
