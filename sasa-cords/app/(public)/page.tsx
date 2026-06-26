@@ -82,7 +82,7 @@ export default function HomePage() {
             <img
               src="/images/SASALogo.svg"
               alt="SASA"
-              style={{ width: '144px', height: '144px', marginTop: '21px', maxWidth: 'none' }}
+              style={{ width: '175px', height: '175px', marginTop: '21px', maxWidth: 'none' }}
             />
           </motion.div>
 
