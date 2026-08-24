@@ -20,51 +20,62 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
+  const [needsConfirmation, setNeedsConfirmation] = useState(false)
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
 
-    // Validation
-    if (!fullName.trim()) {
-      setError('Please enter your full name')
-      return
-    }
-
-    if (!email.trim()) {
-      setError('Please enter your email address')
-      return
-    }
-
-    if (password.length < 6) {
-      setError('Password must be at least 6 characters')
-      return
-    }
-
-    if (password !== confirmPassword) {
-      setError('Passwords do not match')
-      return
-    }
+    if (!fullName.trim()) { setError('Please enter your full name'); return }
+    if (!email.trim()) { setError('Please enter your email address'); return }
+    if (password.length < 6) { setError('Password must be at least 6 characters'); return }
+    if (password !== confirmPassword) { setError('Passwords do not match'); return }
 
     setLoading(true)
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, fullName }),
+      // Sign up directly via client — this ensures the trigger fires correctly
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { full_name: fullName } },
       })
 
-      const data = await response.json()
-
-      if (!response.ok) {
-        setError(data.error || 'Sign up failed')
+      if (signUpError) {
+        setError(signUpError.message)
         setLoading(false)
         return
       }
 
+      if (!data.user) {
+        setError('Signup failed. Please try again.')
+        setLoading(false)
+        return
+      }
+
+      // Call API just to handle member linking
+      await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: data.user.id,
+          email:  data.user.email,
+          fullName,
+        }),
+      })
+
+      // If session exists, email confirmation is OFF — log them in immediately
+      if (data.session) {
+        await new Promise(resolve => setTimeout(resolve, 400))
+        window.location.href = '/student'
+        return
+      }
+
+      // Email confirmation is ON — show check email message
+      setNeedsConfirmation(true)
       setSuccess(true)
-      setTimeout(() => router.push('/login?message=signup_success'), 2000)
+      setLoading(false)
+
     } catch (err) {
       setError('An error occurred. Please try again.')
       setLoading(false)
@@ -99,8 +110,18 @@ export default function SignupPage() {
             </motion.div>
             <h2 className="text-2xl font-serif text-foreground mb-2">Account Created!</h2>
             <p className="text-gray-600 text-sm mb-4">
-              Your account has been created successfully. Redirecting to login...
+              {needsConfirmation
+                ? 'Please check your email and click the confirmation link before logging in.'
+                : 'Your account has been created. Taking you to your dashboard...'}
             </p>
+            {needsConfirmation && (
+              <Link
+                href="/login"
+                className="inline-block mt-2 text-amber-600 hover:text-amber-700 font-medium text-sm transition-colors"
+              >
+                Go to Login →
+              </Link>
+            )}
           </div>
         </motion.div>
       </div>
@@ -148,9 +169,7 @@ export default function SignupPage() {
 
           <form onSubmit={handleSignup} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Full Name
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Full Name</label>
               <input
                 type="text"
                 value={fullName}
@@ -162,9 +181,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Email Address
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Email Address</label>
               <input
                 type="email"
                 value={email}
@@ -176,9 +193,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Password
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
@@ -199,9 +214,7 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-1.5">
-                Confirm Password
-              </label>
+              <label className="block text-sm font-medium text-foreground mb-1.5">Confirm Password</label>
               <div className="relative">
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}

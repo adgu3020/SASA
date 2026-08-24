@@ -39,6 +39,9 @@ export default function LoginPage() {
         .single()
 
       const dest = profile?.role === 'admin' ? '/admin' : '/student'
+
+      // Wait for cookie to be fully written before navigating
+      await new Promise(resolve => setTimeout(resolve, 400))
       window.location.href = dest
     }
   }

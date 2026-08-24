@@ -5,7 +5,7 @@ import type { Profile } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
-export default async function DashboardLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
