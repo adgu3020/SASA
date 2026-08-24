@@ -132,8 +132,8 @@ export default function AboutPage() {
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
                   style={{ backgroundImage: `url(${item.image})` }}
                 />
-                <div className={`absolute inset-0 bg-gradient-to-br ${item.grad} opacity-75`} />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <div className={`absolute inset-0 bg-gradient-to-br ${item.grad} opacity-30`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
 
                 <div className="absolute inset-0 p-7 flex flex-col justify-end">
                   <span className="text-3xl mb-2">{item.emoji}</span>

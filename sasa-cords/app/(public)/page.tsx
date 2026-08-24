@@ -9,28 +9,28 @@ const EVENTS = [
   {
     title:    'Garba Night',
     desc:     'Annual Navratri celebration with traditional dance, music, and color.',
-    image:    '/images/events/garba.jpg',
+    image:    '/images/events/garba1.jpg',
     fallback: 'from-orange-400 to-red-500',
     emoji:    '🪔',
   },
   {
     title:    'SASA Show',
     desc:     'Our flagship cultural showcase — performances, fashion, and food.',
-    image:    '/images/events/sasa-show.jpg',
+    image:    '/images/events/sasa-show1.jpg',
     fallback: 'from-pink-500 to-purple-600',
     emoji:    '🎭',
   },
   {
     title:    'Tabling',
     desc:     'Connecting with campus, spreading awareness, and welcoming new members.',
-    image:    '/images/events/tabling.jpg',
+    image:    '/images/events/tabling1.jpg',
     fallback: 'from-amber-400 to-orange-500',
     emoji:    '🌿',
   },
   {
     title:    'Community',
     desc:     'Hangouts, study sessions, and building friendships that last a lifetime.',
-    image:    '/images/events/community.jpg',
+    image:    '/images/events/community1.jpg',
     fallback: 'from-emerald-400 to-teal-500',
     emoji:    '🤝',
   },
@@ -200,9 +200,9 @@ export default function HomePage() {
                   style={{ backgroundImage: `url(${event.image})` }}
                 />
                 {/* Gradient fallback */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${event.fallback} opacity-80`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${event.fallback} opacity-20`} />
                 {/* Dark overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
                 {/* Content */}
                 <div className="absolute inset-0 p-6 flex flex-col justify-end">
