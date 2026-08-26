@@ -23,14 +23,14 @@ const EVENTS = [
   {
     title:    'Tabling',
     desc:     'Connecting with campus, spreading awareness, and welcoming new members.',
-    image:    '/images/events/tabling1.jpg',
+    image:    '/images/events/tabling.jpg',
     fallback: 'from-amber-400 to-orange-500',
     emoji:    '🌿',
   },
   {
     title:    'Community',
     desc:     'Hangouts, study sessions, and building friendships that last a lifetime.',
-    image:    '/images/events/community1.jpg',
+    image:    '/images/events/community.jpg',
     fallback: 'from-emerald-400 to-teal-500',
     emoji:    '🤝',
   },
@@ -39,7 +39,7 @@ const EVENTS = [
 const STATS = [
   { value: '100+', label: 'Active Members' },
   { value: '10+',  label: 'Years at CU' },
-  { value: '4',    label: 'Annual Events' },
+  { value: '2',    label: 'Annual Events' },
   { value: '1',    label: 'Community' },
 ]
 
@@ -234,7 +234,7 @@ export default function HomePage() {
                 className="w-full h-full bg-cover bg-center"
                 style={{ backgroundImage: 'url(/images/about-hero.jpg)' }}
               />
-              <div className="absolute inset-0 bg-gradient-to-br from-amber-900/60 to-red-900/40 rounded-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-900/10 to-red-900/10 rounded-3xl" />
             </div>
             {/* Decorative card */}
             <div className="absolute -bottom-6 -right-6 bg-amber-400 rounded-2xl p-5 shadow-xl">
