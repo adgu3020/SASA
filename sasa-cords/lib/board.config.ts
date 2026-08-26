@@ -39,7 +39,7 @@ export const BOARD_MEMBERS: BoardMember[] = [
   {
     name:         'Neil Sury',
     role:         'Outreach Chair',
-    bio:          'Short bio here.',
+    bio:          'Hi I\'m Neil, I\'m a 4th year studying Aerospace engineering and economics. I love playing tennis and cooking in my free time and enjoy reading as well. I am looking forward to another great year at SASA!',
     image:        '/images/board/outreach.jpg',
     imagePosition: 'center top',
     instagram:    '@neilsury',
