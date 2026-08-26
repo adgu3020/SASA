@@ -21,7 +21,7 @@ export const BOARD_MEMBERS: BoardMember[] = [
   {
     name:         'Aditya Gupta',
     role:         'Treasurer',
-    bio:          'Hey! I\'m Aditya, a sophomore at CU Boulder majoring in Computer Science and minoring in Business. I\'m from Aurora, Colorado and I love to play video games, watch movies, and listen to music in my free time!',
+    bio:          'Hey! I\'m Aditya, a sophomore at CU majoring in Computer Science and minoring in Business. I\'m from Aurora, Colorado and I love to play video games, watch movies, and listen to music in my free time!',
     image:        '/images/board/treasurer.jpg',
     imagePosition: 'center top',
     instagram:    '@g_aditya3',
