@@ -62,19 +62,5 @@ CREATE INDEX IF NOT EXISTS idx_attendance_member    ON public.attendance(member_
 -- (Already nullable in original schema — this just confirms it)
 -- ═══════════════════════════════════════════════════════════════
 
--- Auto-link member when a profile is created with matching email
-CREATE OR REPLACE FUNCTION public.handle_member_linking()
-RETURNS TRIGGER AS $$
-BEGIN
-  -- When a new profile is created, check if a member with same email exists
-  UPDATE public.members
-  SET profile_id = NEW.id
-  WHERE email = NEW.email
-    AND profile_id IS NULL;
-  RETURN NEW;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-
-CREATE TRIGGER on_profile_created_link_member
-  AFTER INSERT ON public.profiles
-  FOR EACH ROW EXECUTE FUNCTION public.handle_member_linking();
+-- Verified linking is installed by 202610120001_secure_registration.sql.
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.meetings,public.attendance TO authenticated,service_role;

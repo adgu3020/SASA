@@ -41,7 +41,8 @@ export default function StudentDashboardLoader() {
     setLoading(true)
     apiFetch('/api/student/me')
       .then(r => r.json())
-      .then(({ data }) => setData(data))
+      .then(({ data, error }) => { if (error) setError(error); else setData(data) })
+      .catch(() => setError('Failed to refresh your dashboard.'))
       .finally(() => setLoading(false))
   }} />
 }

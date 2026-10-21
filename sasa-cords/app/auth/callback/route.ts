@@ -1,4 +1,5 @@
-import { createServerClient, createAdminClient } from '@/lib/supabase/server'
+import { ensureStudentMember } from '@/lib/student-link'
+import { createServerClient } from '@/lib/supabase/server'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -11,21 +12,9 @@ export async function GET(request: NextRequest) {
     const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
     if (!error && data.user) {
-      const admin = createAdminClient()
 
-      // Auto-link member record if email matches and not yet linked
-      const { data: member } = await admin
-        .from('members')
-        .select('id, profile_id')
-        .eq('email', data.user.email ?? '')
-        .maybeSingle()
-
-      if (member && !member.profile_id) {
-        await admin
-          .from('members')
-          .update({ profile_id: data.user.id })
-          .eq('id', member.id)
-      }
+      try { await ensureStudentMember(data.user.id) }
+      catch { return NextResponse.redirect(`${origin}/student`) }
 
       const { data: profile } = await supabase
         .from('profiles')

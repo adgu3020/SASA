@@ -36,9 +36,9 @@ export default function SignupPage() {
     try {
       // Sign up directly via client — this ensures the trigger fires correctly
       const { data, error: signUpError } = await supabase.auth.signUp({
-        email,
+        email: email.trim().toLowerCase(),
         password,
-        options: { data: { full_name: fullName } },
+        options: { data: { full_name: fullName.trim() }, emailRedirectTo: `${window.location.origin}/auth/callback` },
       })
 
       if (signUpError) {
@@ -53,20 +53,16 @@ export default function SignupPage() {
         return
       }
 
-      // Call API just to handle member linking
-      await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: data.user.id,
-          email:  data.user.email,
-          fullName,
-        }),
-      })
-
-      // If session exists, email confirmation is OFF — log them in immediately
       if (data.session) {
-        await new Promise(resolve => setTimeout(resolve, 400))
+        const res = await fetch('/api/auth/signup', {
+          method: 'POST', headers: { Authorization: `Bearer ${data.session.access_token}` },
+        })
+        const result = await res.json()
+        if (!res.ok) {
+          setError(`Account created, but attendance linking needs attention: ${result.error}. Sign in to retry.`)
+          setLoading(false)
+          return
+        }
         window.location.href = '/student'
         return
       }
@@ -111,7 +107,7 @@ export default function SignupPage() {
             <h2 className="text-2xl font-serif text-foreground mb-2">Account Created!</h2>
             <p className="text-gray-600 text-sm mb-4">
               {needsConfirmation
-                ? 'Please check your email and click the confirmation link before logging in.'
+                ? 'Please check your email and click the confirmation link before logging in. Your verified account will then connect to the attendance system.'
                 : 'Your account has been created. Taking you to your dashboard...'}
             </p>
             {needsConfirmation && (

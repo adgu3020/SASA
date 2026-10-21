@@ -1,3 +1,4 @@
+import { requireAdminPage } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import Link from 'next/link'
 import { Users, FileCheck, CheckCircle2, Clock, TrendingUp, ArrowRight } from 'lucide-react'
@@ -6,6 +7,7 @@ import { EligibilityBadge, SubmissionBadge } from '@/components/shared/Eligibili
 export const dynamic = 'force-dynamic'
 
 export default async function AdminPage() {
+  await requireAdminPage()
   const admin = createAdminClient()
 
   const [

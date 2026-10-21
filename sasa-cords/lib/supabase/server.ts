@@ -1,6 +1,7 @@
 import { createServerClient as _createServerClient } from '@supabase/ssr'
 import { createClient as _createAdminClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
 import type { NextRequest } from 'next/server'
 
 // For Server Components and Layouts
@@ -38,7 +39,7 @@ export function createAdminClient() {
 // Returns { userId, role } if valid, null if not
 export async function verifyAuth(request: NextRequest): Promise<{ userId: string; role: string } | null> {
   const authHeader = request.headers.get('Authorization')
-  const token = authHeader?.replace('Bearer ', '').trim()
+  const token = authHeader?.match(/^Bearer\s+(.+)$/i)?.[1]?.trim()
   if (!token) return null
 
   const admin = createAdminClient()
@@ -52,4 +53,13 @@ export async function verifyAuth(request: NextRequest): Promise<{ userId: string
     .single()
 
   return { userId: user.id, role: profile?.role ?? 'student' }
+}
+// Every server-rendered admin page checks identity before service-role reads.
+export async function requireAdminPage() {
+  const client = await createServerClient()
+  const { data: { user } } = await client.auth.getUser()
+  if (!user) redirect('/login')
+  const { data: profile, error } = await client.from('profiles').select('role').eq('id', user.id).single()
+  if (error || profile?.role !== 'admin') redirect('/student')
+  return user
 }

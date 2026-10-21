@@ -9,7 +9,11 @@ export async function POST(request: NextRequest) {
 
   const admin = createAdminClient()
   const body = await request.json()
-  const { full_name, email, graduation_year, comments } = body
+  const { data: identity, error: identityError } = await admin.from('members')
+    .select('full_name,email').eq('profile_id', auth.userId).single()
+  if (identityError || !identity) return NextResponse.json({ error: 'Connect your attendance account first' }, { status: 409 })
+  const { full_name, email } = identity
+  const { graduation_year, comments } = body
 
   if (!full_name || !email) {
     return NextResponse.json({ error: 'Name and email are required' }, { status: 400 })

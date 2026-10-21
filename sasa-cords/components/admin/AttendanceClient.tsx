@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Plus, Search, Users, Calendar, CheckSquare, ChevronRight, Trash2, Loader2 } from 'lucide-react'
+import { Plus, Search, Users, Calendar, CheckSquare, ChevronRight, Trash2, Loader2, Pencil } from 'lucide-react'
 import { formatDate, cn } from '@/lib/utils'
 import CreateMeetingDialog from './CreateMeetingDialog'
 import MeetingAttendanceSheet from './MeetingAttendanceSheet'
@@ -15,7 +15,7 @@ interface Meeting {
   description: string | null
   semester_id: string | null
   semester?: { name: string } | null
-  attendance?: { member_id: string }[]  // ← changed from { count: number }[]
+  attendance?: { member_id: string; attended?: boolean }[]  // ← changed from { count: number }[]
   created_at: string
 }
 
@@ -42,6 +42,8 @@ interface Props {
 export default function AttendanceClient({ initialMeetings, members, semesters }: Props) {
   const [meetings, setMeetings]           = useState(initialMeetings)
   const [search, setSearch]               = useState('')
+  const [editing, setEditing] = useState<Meeting | null>(null)
+  const [notice, setNotice] = useState('')
   const [showCreate, setShowCreate]       = useState(false)
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null)
   const [deleting, setDeleting]           = useState<string | null>(null)
@@ -56,7 +58,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
   }, [meetings, search, semesterFilter])
 
   function getAttendanceCount(meeting: Meeting): number {
-    return (meeting.attendance ?? []).length
+    return (meeting.attendance ?? []).filter(a => a.attended !== false).length
   }
 
   async function handleDelete(id: string) {
@@ -72,7 +74,10 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
   }
 
   function onMeetingCreated(meeting: Meeting) {
-    setMeetings(prev => [meeting, ...prev])
+    setMeetings(prev => editing ? prev.map(m => m.id === meeting.id
+      ? { ...m, ...meeting, semester: semesters.find(s => s.id === meeting.semester_id) ?? null } : m) : [meeting, ...prev])
+    setNotice(editing ? 'Meeting updated. Attendance has been preserved.' : 'Meeting created.')
+    setEditing(null)
     setShowCreate(false)
   }
 
@@ -86,6 +91,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
 
   return (
     <>
+      {notice && <p role="status" className="text-sm text-emerald-700">{notice}</p>}
       {/* Toolbar */}
       <div className="flex flex-wrap gap-3 items-center">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
@@ -111,7 +117,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
         </select>
 
         <button
-          onClick={() => setShowCreate(true)}
+          onClick={() => { setEditing(null); setShowCreate(true) }}
           className="ml-auto flex items-center gap-2 px-4 py-2 text-sm rounded-lg bg-amber-400 text-white font-semibold hover:bg-amber-500 transition-all"
         >
           <Plus size={14} />
@@ -128,7 +134,7 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
             <Calendar size={32} className="text-muted-foreground/30" />
             <p className="text-muted-foreground text-sm">No meetings yet</p>
             <button
-              onClick={() => setShowCreate(true)}
+              onClick={() => { setEditing(null); setShowCreate(true) }}
               className="text-sm text-amber-600 hover:text-amber-700 font-medium"
             >
               Create your first meeting →
@@ -197,6 +203,9 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
                     Take Attendance
                   </button>
 
+                  <button onClick={() => { setEditing(meeting); setShowCreate(true) }} className="flex items-center gap-1 text-sm text-amber-700 px-2 py-1 rounded-lg hover:bg-amber-50">
+                    <Pencil size={14} /> Edit
+                  </button>
                   <button
                     onClick={() => handleDelete(meeting.id)}
                     disabled={deleting === meeting.id}
@@ -215,9 +224,10 @@ export default function AttendanceClient({ initialMeetings, members, semesters }
       </div>
 
       <CreateMeetingDialog
+        meeting={editing}
         open={showCreate}
         semesters={semesters}
-        onClose={() => setShowCreate(false)}
+        onClose={() => { setShowCreate(false); setEditing(null) }}
         onCreated={onMeetingCreated}
       />
 

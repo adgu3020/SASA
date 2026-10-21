@@ -9,7 +9,7 @@ export async function apiFetch(url: string, options: RequestInit = {}): Promise<
   return fetch(url, {
     ...options,
     headers: {
-      'Content-Type': 'application/json',
+      ...(!(options.body instanceof FormData) && { 'Content-Type': 'application/json' }),
       ...(session?.access_token && { Authorization: `Bearer ${session.access_token}` }),
       ...(options.headers ?? {}),
     },

@@ -36,7 +36,7 @@ export default function MembersClient({ initialMembers, semesters }: MembersClie
   const [deleting, setDeleting] = useState<string | null>(null)
 
   const graduationYears = useMemo(() =>
-    [...new Set(members.map(m => m.graduation_year))].sort((a, b) => a - b),
+    [...new Set(members.map(m => m.graduation_year).filter((y): y is number => y !== null))].sort((a, b) => a - b),
     [members]
   )
 

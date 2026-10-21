@@ -1,9 +1,11 @@
+import { meetingInput } from '@/lib/meeting-input'
 import { NextRequest, NextResponse } from 'next/server'
 import { createAdminClient, verifyAuth } from '@/lib/supabase/server'
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const auth = await verifyAuth(request)
   if (!auth) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  if (auth.role !== 'admin') return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
 
   const admin = createAdminClient()
   const { id } = await params
@@ -25,11 +27,13 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
 
   const admin = createAdminClient()
   const { id } = await params
-  const body = await request.json()
+  let input
+  try { input = meetingInput(await request.json()) }
+  catch (error) { return NextResponse.json({ error: (error as Error).message }, { status: 400 }) }
 
   const { data, error } = await admin
     .from('meetings')
-    .update({ title: body.title, date: body.date, description: body.description || null, semester_id: body.semester_id || null })
+    .update(input)
     .eq('id', id)
     .select()
     .single()

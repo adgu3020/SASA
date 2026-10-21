@@ -185,7 +185,7 @@ BEGIN
     NEW.id,
     NEW.email,
     COALESCE(NEW.raw_user_meta_data->>'full_name', ''),
-    COALESCE(NEW.raw_user_meta_data->>'role', 'student')
+    'student'
   );
   RETURN NEW;
 END;
@@ -220,7 +220,7 @@ BEGIN
       SELECT COALESCE(SUM(volunteer_hours), 0) FROM public.member_semesters WHERE member_id = v_member_id
     ),
     has_leadership = (
-      SELECT BOOL_OR(held_leadership) FROM public.member_semesters WHERE member_id = v_member_id
+      SELECT COALESCE(BOOL_OR(held_leadership), FALSE) FROM public.member_semesters WHERE member_id = v_member_id
     )
   WHERE id = v_member_id;
 
@@ -337,3 +337,8 @@ CREATE INDEX IF NOT EXISTS idx_cord_submissions_email ON public.cord_submissions
 CREATE INDEX IF NOT EXISTS idx_cord_submissions_status ON public.cord_submissions(status);
 CREATE INDEX IF NOT EXISTS idx_notifications_profile_id ON public.notifications(profile_id);
 CREATE INDEX IF NOT EXISTS idx_audit_logs_created_at ON public.audit_logs(created_at DESC);
+
+-- Explicit Data API grants. Apply dated migrations afterward for final column restrictions.
+GRANT SELECT ON public.profiles,public.notifications,public.audit_logs TO authenticated;
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.semesters,public.members,public.member_semesters,public.cord_submissions TO authenticated;
+GRANT SELECT,INSERT,UPDATE,DELETE ON public.profiles,public.semesters,public.members,public.member_semesters,public.cord_submissions,public.notifications,public.audit_logs TO service_role;

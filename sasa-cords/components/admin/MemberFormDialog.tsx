@@ -53,7 +53,7 @@ export default function MemberFormDialog({ open, member, semesters, onClose, onS
       setForm({
         full_name: member.full_name,
         email: member.email,
-        graduation_year: String(member.graduation_year),
+        graduation_year: member.graduation_year?.toString() ?? '',
         major: member.major ?? '',
         is_active: member.is_active,
         admin_notes: member.admin_notes ?? '',
@@ -109,7 +109,7 @@ export default function MemberFormDialog({ open, member, semesters, onClose, onS
 
     const payload = {
       ...form,
-      graduation_year: Number(form.graduation_year),
+      graduation_year: form.graduation_year ? Number(form.graduation_year) : null,
       semester_records: semesterRecords.map(s => ({
         ...s,
         meetings_attended: Number(s.meetings_attended),

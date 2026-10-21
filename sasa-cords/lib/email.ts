@@ -1,7 +1,6 @@
 import { Resend } from 'resend'
 import { ADMIN_EMAIL_SUBJECTS } from './eligibility.config'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
 const SASA_EMAIL = process.env.SASA_ORG_EMAIL!
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'noreply@sasa-cords.com'
 
@@ -9,13 +8,19 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL ?? 'noreply@sasa-cords.com'
 // SEND ADMIN EMAIL — only sends to the SASA org email
 // ─────────────────────────────────────────────────────────────────────────
 async function sendAdminEmail(subject: string, html: string): Promise<void> {
+  if (!process.env.RESEND_API_KEY || !SASA_EMAIL) {
+    console.warn('[Email] Admin email is not configured')
+    return
+  }
   try {
-    await resend.emails.send({
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const { error } = await resend.emails.send({
       from: FROM_EMAIL,
       to: SASA_EMAIL,
       subject,
       html,
     })
+    if (error) console.error('[Email] Delivery failed:', error.message)
   } catch (err) {
     // Don't throw — email failures shouldn't break the main flow
     console.error('[Email] Failed to send admin email:', err)

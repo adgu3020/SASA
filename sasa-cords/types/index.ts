@@ -40,7 +40,7 @@ export interface Member {
   profile_id: string | null
   full_name: string
   email: string
-  graduation_year: number
+  graduation_year: number | null
   major: string | null
   is_active: boolean
 

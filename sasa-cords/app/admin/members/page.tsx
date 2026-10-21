@@ -1,9 +1,11 @@
+import { requireAdminPage } from '@/lib/supabase/server'
 import { createAdminClient } from '@/lib/supabase/server'
 import MembersClient from '@/components/admin/MembersClient'
 
 export const dynamic = 'force-dynamic'
 
 export default async function AdminMembersPage() {
+  await requireAdminPage()
   const admin = createAdminClient()
 
   const [{ data: members }, { data: semesters }] = await Promise.all([

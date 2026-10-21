@@ -255,13 +255,13 @@ export default function HomePage() {
               A home away<br />from home
             </h2>
             <p className="text-muted-foreground leading-relaxed mb-6">
-              SASA is more than an organization — it's a family. We bring together South Asian students
+              SASA is more than an organization — it&apos;s a family. We bring together South Asian students
               and allies at CU Boulder to celebrate our heritage, support one another, and create
               experiences that last a lifetime.
             </p>
             <p className="text-muted-foreground leading-relaxed mb-8">
-              Whether you're deeply connected to South Asian culture or just curious to learn more,
-              there's a place for you here. Come as you are.
+              Whether you&apos;re deeply connected to South Asian culture or just curious to learn more,
+              there&apos;s a place for you here. Come as you are.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
@@ -302,7 +302,7 @@ export default function HomePage() {
               href="/meetings"
               className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full bg-amber-400 text-black font-bold text-sm hover:bg-amber-300 transition-all"
             >
-              See What's Coming <ArrowRight size={15} />
+              See What&apos;s Coming <ArrowRight size={15} />
             </Link>
           </motion.div>
         </div>

@@ -167,7 +167,7 @@ export default function AboutPage() {
             Everyone is welcome
           </h2>
           <p className="text-white/75 text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-            SASA is open to all CU Boulder students regardless of background. Whether you're
+            SASA is open to all CU Boulder students regardless of background. Whether you&apos;re
             South Asian, curious about the culture, or just looking for a welcoming community —
             come as you are.
           </p>

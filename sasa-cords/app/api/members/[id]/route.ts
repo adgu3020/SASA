@@ -14,7 +14,7 @@ export async function PUT(request: NextRequest, { params }: { params: Promise<{ 
   const { id } = await params
 
   const { error: memberError } = await admin.from('members').update({
-    full_name: memberData.full_name, email: memberData.email,
+    full_name: memberData.full_name, email: memberData.email?.trim().toLowerCase(),
     graduation_year: memberData.graduation_year, major: memberData.major || null,
     is_active: memberData.is_active ?? true, admin_notes: memberData.admin_notes || null,
     admin_override: memberData.admin_override ?? false,

@@ -30,6 +30,7 @@ interface NavItem {
 const ADMIN_NAV: NavItem[] = [
   { href: '/admin',             label: 'Overview',    icon: LayoutDashboard },
   { href: '/admin/members',     label: 'Members',     icon: Users },
+  { href: '/admin/board', label: 'Board', icon: Users },
   { href: '/admin/attendance',  label: 'Attendance',  icon: ClipboardList },
   { href: '/admin/submissions', label: 'Submissions', icon: FileCheck },
   { href: '/admin/analytics',   label: 'Analytics',   icon: BarChart3 },

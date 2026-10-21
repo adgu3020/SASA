@@ -1,4 +1,5 @@
 'use client'
+import PresentationViewer from './PresentationViewer'
 
 import { motion } from 'framer-motion'
 import { Calendar, Clock } from 'lucide-react'
@@ -7,6 +8,9 @@ interface Meeting {
   id: string
   title: string
   date: string
+  time?: string | null
+  location?: string | null
+  presentations?: { url: string }[]
   description?: string | null
   semester?: { name: string } | null
 }
@@ -81,7 +85,7 @@ export default function MeetingsClient({ upcoming, past }: Props) {
                       {new Date(meeting.date + 'T00:00:00').getDate()}
                     </p>
                   </div>
-                  <div>
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-semibold text-foreground">{meeting.title}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">
                       {new Date(meeting.date + 'T00:00:00').toLocaleDateString('en-US', {
@@ -89,6 +93,8 @@ export default function MeetingsClient({ upcoming, past }: Props) {
                       })}
                       {meeting.semester && ` · ${meeting.semester.name}`}
                     </p>
+                    {(meeting.time || meeting.location) && <p className="text-sm text-muted-foreground mt-1">{meeting.time?.slice(0,5)}{meeting.time && ' (Boulder time)'}{meeting.location && ` · ${meeting.location}`}</p>}
+                    <PresentationViewer presentations={meeting.presentations} />
                     {meeting.description && (
                       <p className="text-sm text-muted-foreground mt-1">{meeting.description}</p>
                     )}
@@ -110,7 +116,7 @@ export default function MeetingsClient({ upcoming, past }: Props) {
               {past.map(meeting => (
                 <div
                   key={meeting.id}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl border border-border bg-secondary/20 opacity-70"
+                  className="px-4 py-3 rounded-xl border border-border bg-secondary/20"
                 >
                   <div>
                     <p className="text-sm font-medium text-foreground">{meeting.title}</p>
@@ -120,6 +126,7 @@ export default function MeetingsClient({ upcoming, past }: Props) {
                       })}
                     </p>
                   </div>
+                  <PresentationViewer presentations={meeting.presentations} />
                   {meeting.semester && (
                     <span className="text-xs text-muted-foreground shrink-0 ml-4">
                       {meeting.semester.name}

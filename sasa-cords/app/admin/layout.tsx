@@ -11,15 +11,15 @@ export default async function AdminLayout({
   children: React.ReactNode
 }) {
   const supabase = await createServerClient()
-  const { data: { session } } = await supabase.auth.getSession()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  if (!session) redirect('/login')
+  if (!user) redirect('/login')
 
   const admin = createAdminClient()
   const { data: profile } = await admin
     .from('profiles')
     .select('*')
-    .eq('id', session.user.id)
+    .eq('id', user.id)
     .single()
 
   if (!profile) redirect('/login')

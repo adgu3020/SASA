@@ -26,22 +26,27 @@ export default function MeetingAttendanceSheet({ meeting, members, onClose, onSa
   const [saving, setSaving]       = useState(false)
   const [saved, setSaved]         = useState(false)
 
+  const [error, setError] = useState('')
+  const [loadFailed, setLoadFailed] = useState(false)
   // Load existing attendance when meeting changes
   useEffect(() => {
     if (!meeting) return
     setSearch('')
+    setError('')
+    setLoadFailed(false)
+    setAttended(new Set())
     setSaved(false)
     setLoading(true)
 
     apiFetch(`/api/meetings/${meeting.id}/attendance`)
-      .then(r => r.json())
+      .then(async r => { const json = await r.json(); if (!r.ok) throw new Error(json.error); return json })
       .then(({ data }) => {
         const ids = new Set<string>((data ?? []).map((a: any) => a.member_id))
         setAttended(ids)
         setLoading(false)
       })
-      .catch(() => setLoading(false))
-  }, [meeting?.id])
+      .catch(() => { setLoadFailed(true); setError('Attendance could not be loaded. Close and reopen to retry.'); setLoading(false) })
+  }, [meeting])
 
   const filteredMembers = useMemo(() =>
     members.filter(m =>
@@ -62,7 +67,7 @@ export default function MeetingAttendanceSheet({ meeting, members, onClose, onSa
   }
 
   function selectAll() {
-    setAttended(new Set(filteredMembers.map(m => m.id)))
+    setAttended(prev => new Set([...prev, ...filteredMembers.map(m => m.id)]))
     setSaved(false)
   }
 
@@ -76,17 +81,16 @@ export default function MeetingAttendanceSheet({ meeting, members, onClose, onSa
     setSaving(true)
     setSaved(false)
 
-    const res = await apiFetch(`/api/meetings/${meeting.id}/attendance`, {
-      method: 'POST',
-      body: JSON.stringify({ member_ids: [...attended] }),
-    })
-
-    setSaving(false)
-    if (res.ok) {
-      setSaved(true)
-      onSaved(meeting.id, attended.size)
+    try {
+      const res = await apiFetch(`/api/meetings/${meeting.id}/attendance`, {
+        method: 'POST', body: JSON.stringify({ member_ids: [...attended] }),
+      })
+      const json = await res.json()
+      if (!res.ok) throw new Error(json.error ?? 'Unable to save attendance')
+      setSaved(true); onSaved(meeting.id, json.data.count)
       setTimeout(() => setSaved(false), 2000)
-    }
+    } catch(e) { setError((e as Error).message) }
+    finally { setSaving(false) }
   }
 
   return (
@@ -212,11 +216,12 @@ export default function MeetingAttendanceSheet({ meeting, members, onClose, onSa
               )}
             </div>
 
+            {error && <p role="alert" className="px-6 py-2 text-sm text-red-600">{error}</p>}
             {/* Save footer */}
             <div className="px-6 py-4 border-t border-border bg-white">
               <button
                 onClick={handleSave}
-                disabled={saving}
+                disabled={saving || loading || loadFailed}
                 className={cn(
                   'w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all',
                   saved

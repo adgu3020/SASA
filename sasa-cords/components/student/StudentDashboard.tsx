@@ -1,5 +1,6 @@
 'use client'
 
+import PresentationViewer from '@/components/public/PresentationViewer'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -123,7 +124,7 @@ export default function StudentDashboard({ data, onDataRefresh }: Props) {
             <h2 className="font-semibold text-foreground">Account Not Yet Linked</h2>
           </div>
           <p className="text-sm text-muted-foreground">
-            Your account hasn't been linked to a member record yet. Contact your SASA board to have your profile connected.
+            Your account hasn&apos;t been linked to a member record yet. Contact your SASA board to have your profile connected.
           </p>
         </div>
       )}
@@ -230,7 +231,7 @@ export default function StudentDashboard({ data, onDataRefresh }: Props) {
                           }
                         </div>
                         <div className="min-w-0">
-                          <p className="text-sm font-medium text-foreground truncate">{meeting.title}</p>
+                          <p className="text-sm font-medium text-foreground truncate">{meeting.title}</p><PresentationViewer presentations={meeting.presentations} />
                           <p className="text-xs text-muted-foreground">
                             {new Date(meeting.date + 'T00:00:00').toLocaleDateString('en-US', {
                               weekday: 'short', month: 'short', day: 'numeric', year: 'numeric'
@@ -295,7 +296,7 @@ export default function StudentDashboard({ data, onDataRefresh }: Props) {
         ) : (
           <>
             <p className="text-sm text-muted-foreground mb-5">
-              Believe you've met the requirements? Submit a request for the board to review.
+              Believe you&apos;ve met the requirements? Submit a request for the board to review.
             </p>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

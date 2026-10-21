@@ -138,7 +138,7 @@ export default function NewsletterPage() {
         ) : campaigns.length === 0 ? (
           <div className="glass-card p-8 text-center">
             <p className="text-sm text-muted-foreground mb-4">
-              No newsletters published yet, or newsletter integration isn't set up.
+              No newsletters published yet, or newsletter integration isn&apos;t set up.
             </p>
             {SASA_INFO.mailchimp && (
               <a

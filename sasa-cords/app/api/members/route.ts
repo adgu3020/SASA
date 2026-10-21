@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     .from('members')
     .insert({
       full_name:          memberData.full_name,
-      email:              memberData.email,
+      email:              memberData.email?.trim().toLowerCase(),
       graduation_year:    memberData.graduation_year,
       major:              memberData.major || null,
       is_active:          memberData.is_active ?? true,
